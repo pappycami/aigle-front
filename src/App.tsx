@@ -1,10 +1,20 @@
-import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
+import { AuthProvider } from "./context/AuthContext";
+import "./App.css"; // <-- styles customs après Tailwind
 
-export default function App() {
+function App() {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold">Bienvenue sur Aigle 🦅</h1>
-      <p className="text-gray-600">Frontend React + TypeScript</p>
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<HomePage />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
+
+export default App;

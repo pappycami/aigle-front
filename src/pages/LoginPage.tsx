@@ -1,22 +1,20 @@
 import { useEffect, useState } from "react";
-import { login } from "../services/authService";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { login } from "../services/authService";
 
 export default function LoginPage() {
-  const { accessToken, setAccessToken } = useAuth();
+  const { accessToken, setAccessToken, loading } = useAuth();
   const [email, setEmail] = useState("admin@example.com");
   const [password, setPassword] = useState("password");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // 🔁 Redirection si déjà connecté
   useEffect(() => {
-    console.log("AccessToken:::", accessToken);
-    if (accessToken) {
+    if (!loading && accessToken) {
       navigate("/");
     }
-  }, [accessToken, navigate]);
+  }, [loading, accessToken, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +26,8 @@ export default function LoginPage() {
       setError("Email ou mot de passe invalide");
     }
   };
+
+  if (loading) return <p>Chargement...</p>;
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 shadow">

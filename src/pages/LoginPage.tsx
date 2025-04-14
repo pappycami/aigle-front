@@ -1,28 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { login } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
-  const { setAccessToken } = useAuth();
-  const [email, setEmail] = useState("user@mail.com"); // valeur par défaut pour test
-  const [password, setPassword] = useState("password123456");
+  const { accessToken, setAccessToken } = useAuth();
+  const [email, setEmail] = useState("admin@example.com");
+  const [password, setPassword] = useState("password");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  // 🔁 Redirection si déjà connecté
+  useEffect(() => {
+    console.log("AccessToken:::", accessToken);
+    if (accessToken) {
+      navigate("/");
+    }
+  }, [accessToken, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const { accessToken } = await login({ email, password });
-      setAccessToken(accessToken); // stocké en mémoire (refresh reste en cookie)
-      navigate("/"); // redirige vers la page d'accueil
+      setAccessToken(accessToken);
+      navigate("/");
     } catch (err) {
       setError("Email ou mot de passe invalide");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6">
+    <div className="max-w-md mx-auto mt-10 p-6 shadow">
       <h2 className="text-2xl font-bold mb-4">Connexion</h2>
       {error && <p className="text-red-500 mb-2">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">

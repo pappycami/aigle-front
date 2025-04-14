@@ -40,17 +40,15 @@ export default function HomePage() {
   };
 
   const handleSave = async (updatedUser: User) => {
-    if (!accessToken) return;
     try {
+      if (!accessToken) throw new Error("Token manquant");
       const savedUser = await updateUser(updatedUser, accessToken);
-      setUsers(users.map((u) => (u.id === savedUser.id ? savedUser : u)));
-      setIsModalOpen(false);
+      setUsers((prev) => prev.map((u) => (u.id === savedUser.id ? savedUser : u)));
       setSelectedUser(null);
-    } catch (err) {
-      console.error(err);
-      setError("Erreur lors de la mise à jour");
+    } catch (err: any) {
+      console.error("Erreur dans handleSave:", err.message);
     }
-  };
+  };  
 
   const handleDelete = async (id: number) => {
     console.log("Supprimer utilisateur ID:", id);

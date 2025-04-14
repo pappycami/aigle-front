@@ -25,13 +25,20 @@ export const createUser = async (user: Omit<User, "id">): Promise<User> => {
   return res.json();
 };
 
-export const updateUser = async (user: User): Promise<User> => {
+export const updateUser = async (user: User, accessToken: string): Promise<User> => {
   const res = await fetch(`${API_URL}/${user.id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
     body: JSON.stringify(user),
   });
-  if (!res.ok) throw new Error("Erreur lors de la mise à jour");
+  if (!res.ok) {
+    const errorText = await res.text(); 
+    console.error("Erreur PUT:", errorText);
+    throw new Error("Erreur lors de la mise à jour de l'utilisateur");
+  } 
   return res.json();
 };
 

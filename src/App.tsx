@@ -2,7 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import { AuthProvider } from "./context/AuthContext";
-import "./App.css"; // <-- styles customs après Tailwind
+import PrivateRoute from "./components/PrivateRoute";
+import "./App.css";
 
 function App() {
   return (
@@ -10,7 +11,14 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <HomePage />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

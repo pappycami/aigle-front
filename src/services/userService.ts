@@ -35,9 +35,14 @@ export const updateUser = async (user: User): Promise<User> => {
   return res.json();
 };
 
-export const deleteUser = async (id: number): Promise<void> => {
+export const deleteUser = async (id: number, accessToken: string): Promise<void> => {
   const res = await fetch(`${API_URL}/${id}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    credentials: "include",
   });
+
   if (!res.ok) throw new Error("Erreur lors de la suppression");
 };

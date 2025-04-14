@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { getAllUsers } from "../services/userService";
+import { getAllUsers, deleteUser } from "../services/userService";
+import UserList from "../components/UserList";
+import { User } from "../types/user";
 
 export default function HomePage() {
   const { accessToken, loading } = useAuth();
@@ -26,22 +28,33 @@ export default function HomePage() {
     }
   }, [accessToken]);
 
+  const handleEdit = (user: User) => {
+    console.log("Éditer utilisateur :", user);
+    // Tu pourras rediriger vers une page d'édition plus tard
+  };
+
+  const handleDelete = async (id: number) => {
+    console.log("Supprimer utilisateur ID:", id);
+    if (!accessToken) return;
+  
+    const confirm = window.confirm("Voulez-vous vraiment supprimer cet utilisateur ?");
+    if (!confirm) return;
+  
+    try {
+      await deleteUser(id, accessToken);
+      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
+      setError("Impossible de supprimer l'utilisateur.");
+    }
+  };
+
   if (loading) return <p>Chargement...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Liste des utilisateurs</h1>
-      <ul className="space-y-4">
-        {users.map((user) => (
-          <li key={user.id} className="border p-4 rounded shadow">
-            <p><strong>Email :</strong> {user.email}</p>
-            <p><strong>Nom :</strong> {user.profile?.firstname} {user.profile?.lastname}</p>
-            <p><strong>Rôle :</strong> {user.role}</p>
-            <p><strong>Groupes :</strong> {user.groups.map((g: any) => g.name).join(", ")}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+      <div className="p-4">
+        <UserList users={users} onDelete={handleDelete} onEdit={handleEdit} />
+      </div>
+    );
 }

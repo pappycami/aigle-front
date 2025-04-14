@@ -21,23 +21,20 @@ export default function UserList({ users, onDelete, onEdit }: Props) {
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id} className="border-b">
+            <tr key={user.id} className="border-b">              
               <td className="p-2">
-                {user.profile.firstname} {user.profile.lastname}
+                {user.profile?.firstname} {user.profile?.lastname}
               </td>
+
               <td className="p-2">{user.email}</td>
+              
               <td className="p-2">{user.role}</td>
+              
               <td className="p-2 space-x-2">
-                <button
-                  className="text-blue-600 hover:underline"
-                  onClick={() => onEdit(user)}
-                >
+                <button className="text-blue-600 hover:underline" onClick={() => onEdit(user)}>
                   Modifier
                 </button>
-                <button
-                  className="text-red-600 hover:underline"
-                  onClick={() => onDelete(user.id)}
-                >
+                <button className="text-red-600 hover:underline" onClick={() => onDelete(user.id)}>
                   Supprimer
                 </button>
               </td>

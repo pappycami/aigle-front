@@ -1,5 +1,4 @@
-// src/context/AuthContext.tsx
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { getAccessTokenFromApi } from "../services/authService";
 
 interface AuthContextType {
@@ -31,5 +30,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);

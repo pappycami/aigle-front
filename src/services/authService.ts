@@ -5,7 +5,7 @@ export const login = async (credentials: LoginRequest): Promise<AuthResponse> =>
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    credentials: "include", // important pour cookies !
+    credentials: "include",
     body: JSON.stringify(credentials),
   });
 
@@ -20,7 +20,7 @@ export async function getAccessTokenFromApi(): Promise<string | null> {
   try {
     const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
       method: "POST",
-      credentials: "include", // ⚠️ pour que les cookies soient inclus
+      credentials: "include",
     });
 
     if (!res.ok) {

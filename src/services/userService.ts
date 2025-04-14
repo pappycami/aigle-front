@@ -1,9 +1,16 @@
 import { User } from "../types/user";
+import { API_BASE_URL } from "../configs/Aigle";
 
-const API_URL = "http://localhost:8080/api/users"; // adapte si besoin
+const API_URL = `${API_BASE_URL}/users`; 
 
-export const getAllUsers = async (): Promise<User[]> => {
-  const res = await fetch(API_URL);
+export const getAllUsers = async (accessToken: string): Promise<User[]> => {
+  const res = await fetch(API_URL , {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    credentials: "include",
+  });
+
   if (!res.ok) throw new Error("Erreur lors du chargement des utilisateurs");
   return res.json();
 };

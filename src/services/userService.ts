@@ -15,12 +15,17 @@ export const getAllUsers = async (accessToken: string): Promise<User[]> => {
   return res.json();
 };
 
-export const createUser = async (user: Omit<User, "id">): Promise<User> => {
+export const createUser = async (user: Omit<User, "id">, accessToken: string): Promise<User> => {
   const res = await fetch(API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json" 
+    },
+    credentials: "include",
     body: JSON.stringify(user),
   });
+
   if (!res.ok) throw new Error("Erreur lors de la création");
   return res.json();
 };
@@ -32,8 +37,10 @@ export const updateUser = async (user: User, accessToken: string): Promise<User>
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
+    credentials: "include",
     body: JSON.stringify(user),
   });
+  
   if (!res.ok) {
     const errorText = await res.text(); 
     console.error("Erreur PUT:", errorText);

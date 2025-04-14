@@ -1,11 +1,11 @@
 export interface Group {
-    id: number;
+    id?: number;
     name: string;
     description: string;
   }
   
   export interface Profile {
-    id: number;
+    id?: number;
     firstname: string;
     lastname: string;
     phone: string;
@@ -14,7 +14,7 @@ export interface Group {
   }
   
   export interface User {
-    id: number;
+    id?: number;
     email: string;
     role: string;
     profile: Profile;

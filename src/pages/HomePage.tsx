@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { getAllUsers, deleteUser, updateUser } from "../services/userService";
+import { getAllUsers, deleteUser, updateUser, createUser } from "../services/userService";
 import UserList from "../components/UserList";
 import UserForm from "../components/UserForm";
+import UserAdd from "../components/UserAddButton";
 import { User } from "../types/user";
 
 export default function HomePage() {
@@ -39,12 +40,22 @@ export default function HomePage() {
     setIsModalOpen(true);
   };
 
-  const handleSave = async (updatedUser: User) => {
+  const handleSave = async (user: User) => {
     try {
       if (!accessToken) throw new Error("Token manquant");
-      const savedUser = await updateUser(updatedUser, accessToken);
-      setUsers((prev) => prev.map((u) => (u.id === savedUser.id ? savedUser : u)));
+
+      let savedUser: User;
+
+      if (user.id) {
+        savedUser = await updateUser(user, accessToken);
+        setUsers((prev) => prev.map((u) => (u.id === savedUser.id ? savedUser : u)));
+      } else {
+        savedUser = await createUser(user, accessToken);
+        setUsers((prev) => [...prev, savedUser]);
+      }
+  
       setSelectedUser(null);
+      setIsModalOpen(false);
     } catch (err: any) {
       console.error("Erreur dans handleSave:", err.message);
     }
@@ -71,6 +82,7 @@ export default function HomePage() {
 
   return (
       <div className="p-4">
+        <UserAdd onAddClick={(user: SetStateAction<User | null>) => { setSelectedUser(user); setIsModalOpen(true);}} />
         <UserList users={users} onDelete={handleDelete} onEdit={handleEdit} />
         <UserForm user={selectedUser} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleSave} />
       </div>

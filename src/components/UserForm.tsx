@@ -14,12 +14,26 @@ interface Props {
 }
 
 export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
-  const { register, handleSubmit, reset, formState: { errors }} = useForm<User>({ defaultValues: user ?? {} });
+  const defaultUser: User = {
+    id: 0,
+    email: "",
+    role: "USER",
+    profile: {
+      firstname: "",
+      lastname: "",
+      phone: "",
+      address: "",
+      birthDate: "",
+    },
+    groups: [],
+  };
+
+  const { register, handleSubmit, reset, formState: { errors }} = useForm<User>({ defaultValues: defaultUser });
   const { accessToken } = useAuth();
 
   useEffect(() => {
-    if (user) reset(user); // Remplit le form à chaque changement de `user`
-  }, [user, reset]);
+    reset(user ?? defaultUser);
+  }, [user, reset]);  
 
   const onSubmit = async (formData: User) => {
     try {
@@ -39,13 +53,13 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
   };
   
 
-  if (!isOpen || !user) return null;
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-md w-full max-w-md shadow-lg">
         <h2 className="text-xl font-semibold mb-4">
-          {user.id ? "Modifier l'utilisateur" : "Créer un utilisateur"}
+          {user?.id ? "Modifier l'utilisateur" : "Créer un utilisateur"}
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 

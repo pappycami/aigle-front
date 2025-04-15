@@ -31,6 +31,9 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
         if (!value) return "Ce champ est requis.";
         if (value.length < 2) return "Minimum 2 caractères.";
         return "";
+      case "profile.birthDate":
+        if (value && isNaN(Date.parse(value))) return "Date invalide.";
+        return "";
       default:
         return "";
     }
@@ -147,6 +150,23 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
               name="profile.phone" type="text" className="w-full p-2 border rounded" placeholder="Téléphone"
               value={editedUser.profile?.phone || ""}
               onChange={handleChange} />
+          </div>
+
+          {/* Adresse */}
+          <div>
+            <input name="profile.address" type="text" className="w-full p-2 border rounded" placeholder="Adresse"
+              value={editedUser.profile?.address || ""}
+              onChange={handleChange} />
+          </div>
+
+          {/* Date de naissance */}
+          <div>
+            <input name="profile.birthDate" type="date" className="w-full p-2 border rounded" placeholder="Date de naissance" 
+              value={editedUser.profile?.birthDate || ""}
+              onChange={handleChange} />
+            {formErrors["profile.birthDate"] && (
+              <p className="text-red-500 text-sm">{formErrors["profile.birthDate"]}</p>
+            )}
           </div>
 
           {/* Boutons */}

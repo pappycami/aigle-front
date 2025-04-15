@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { User } from "../types/user";
+import { updateUser, createUser } from "../services/userService";
+import { useAuth } from "../hooks/useAuth";
+
 
 interface Props {
   user: User | null;
@@ -11,14 +14,26 @@ interface Props {
 
 export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
   const { register, handleSubmit, reset, formState: { errors }} = useForm<User>({ defaultValues: user ?? {} });
+  const { accessToken } = useAuth();
 
   useEffect(() => {
     if (user) reset(user); // Remplit le form à chaque changement de `user`
   }, [user, reset]);
 
-  const onSubmit = (data: User) => {
-    onSave(data);
+  const onSubmit = async (formData: User) => {
+    try {
+      if (formData.id) {
+        await updateUser(formData, accessToken); // EDIT
+      } else {
+        await createUser(formData, accessToken); // CREATE
+      }
+      onSave(formData);
+      onClose();
+    } catch (err) {
+      console.error("Erreur lors de l'enregistrement :", err);
+    }
   };
+  
 
   if (!isOpen || !user) return null;
 

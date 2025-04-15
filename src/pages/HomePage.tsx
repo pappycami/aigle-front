@@ -11,8 +11,8 @@ export default function HomePage() {
   const { accessToken, loading } = useAuth();
   const navigate = useNavigate();
 
-  const [users, setUsers] = useState<any[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState<string|null>(null);
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

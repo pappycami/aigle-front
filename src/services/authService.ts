@@ -16,7 +16,7 @@ export const login = async (credentials: LoginRequest): Promise<AuthResponse> =>
   return response.json();
 };
 
-export async function getAccessTokenFromApi(): Promise<string | null> {
+export const getAccessTokenFromApi = async (): Promise<string | null> => {
   try {
     const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
       method: "POST",

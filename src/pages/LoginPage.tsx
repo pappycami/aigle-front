@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { login } from "../services/authService";
+import { loginFromApi } from "../services/authService";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const { accessToken, setAccessToken, loading } = useAuth();
@@ -19,10 +20,12 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { accessToken } = await login({ email, password });
+      const { accessToken } = await loginFromApi({ email, password });
       setAccessToken(accessToken);
+      toast.success("Vous êtes Authentifier");
       navigate("/");
     } catch (err) {
+      toast.error("Erreur d'authentification");
       setError("Email ou mot de passe invalide");
     }
   };
@@ -34,17 +37,12 @@ export default function LoginPage() {
       <h2 className="text-2xl font-bold mb-4">Connexion</h2>
       {error && <p className="text-red-500 mb-2">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-2 border rounded"
+        <input type="email" placeholder="Email" className="w-full p-2 border rounded"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          type="password"
-          placeholder="Mot de passe"
-          className="w-full p-2 border rounded"
+          type="password" placeholder="Mot de passe" className="w-full p-2 border rounded"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />

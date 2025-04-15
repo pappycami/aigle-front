@@ -1,7 +1,7 @@
 import { LoginRequest, AuthResponse } from "../types/auth";
 import { API_BASE_URL } from "../configs/Aigle";
 
-export const login = async (credentials: LoginRequest): Promise<AuthResponse> => {
+export const loginFromApi = async (credentials: LoginRequest): Promise<AuthResponse> => {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -34,4 +34,18 @@ export const getAccessTokenFromApi = async (): Promise<string | null> => {
     console.error("Erreur lors de la récupération du token :", err);
     return null;
   }
+}
+
+export const logoutFromApi = async () => {
+  const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include"
+  });
+
+  if (!response.ok) {
+    throw new Error("Échec de deconnexion");
+  }
+  return response.json();
+
 }

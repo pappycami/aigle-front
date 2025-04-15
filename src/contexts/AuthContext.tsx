@@ -1,21 +1,36 @@
 import { createContext, useEffect, useState, ReactNode, } from "react";
-import { getAccessTokenFromApi } from "../services/authService";
+import { getAccessTokenFromApi, logoutFromApi } from "../services/authService";
 
 interface AuthContextType {
   accessToken: string | null;
   setAccessToken: (token: string | null) => void;
   loading: boolean;
+  logout: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   accessToken: null,
   setAccessToken: () => {},
   loading: true,
+  logout: async () => {}
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const logout = async () => {
+    try {
+      await logoutFromApi();
+    } catch (err) {
+      console.error("Erreur lors de la déconnexion côté serveur", err);
+    }
+  
+    // Nettoyage côté client
+    setAccessToken(null);
+    // Supprime cookies client manuellement si besoin (JS ne peut pas supprimer HttpOnly)
+    document.cookie = "accessToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    document.cookie = "refreshToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+  };
 
   useEffect(() => {
     getAccessTokenFromApi().then((token) => {
@@ -25,8 +40,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ accessToken, setAccessToken, loading }}>
+    <AuthContext.Provider value={{ accessToken, setAccessToken, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
+

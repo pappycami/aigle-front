@@ -7,6 +7,7 @@ import UserForm from "../components/UserForm";
 import UserAddButton from "../components/UserAddButton";
 import { User } from "../types/user";
 import toast from "react-hot-toast";
+import Menu from "../components/Menu";
 
 export default function usersPage() {
   const { accessToken, loading } = useAuth();
@@ -93,10 +94,14 @@ export default function usersPage() {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
+    <>
+    <Menu/>
     <div className="p-4 space-y-4">
       <UserAddButton onAddClick={handleAddClick} />
       <UserList users={users} onEdit={handleEdit} onDelete={handleDelete} />
       <UserForm user={selectedUser} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleSave} />
     </div>
+    </>
+    
   );
 }

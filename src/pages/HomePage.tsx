@@ -6,6 +6,7 @@ import UserList from "../components/UserList";
 import UserForm from "../components/UserForm";
 import UserAdd from "../components/UserAddButton";
 import { User } from "../types/user";
+import toast from "react-hot-toast";
 
 export default function HomePage() {
   const { accessToken, loading } = useAuth();
@@ -58,6 +59,7 @@ export default function HomePage() {
       setIsModalOpen(false);
     } catch (err: any) {
       console.error("Erreur dans handleSave:", err.message);
+      toast.error("une erreur est survenu lors de l'enregistrement");
     }
   };  
 
@@ -71,6 +73,7 @@ export default function HomePage() {
     try {
       await deleteUser(id, accessToken);
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+      toast.success("Utilisateur supprimé");
     } catch (error) {
       console.error("Erreur lors de la suppression :", error);
       setError("Impossible de supprimer l'utilisateur.");

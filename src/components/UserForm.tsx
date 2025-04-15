@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { User } from "../types/user";
 import { updateUser, createUser } from "../services/userService";
 import { useAuth } from "../hooks/useAuth";
+import toast from 'react-hot-toast';
 
 
 interface Props {
@@ -23,14 +24,17 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
   const onSubmit = async (formData: User) => {
     try {
       if (formData.id) {
-        await updateUser(formData, accessToken); // EDIT
+        await updateUser(formData, accessToken);
+        toast.success("Utilisateur mis à jour avec succès");
       } else {
-        await createUser(formData, accessToken); // CREATE
+        await createUser(formData, accessToken);
+        toast.success("Utilisateur créé avec succès");
       }
       onSave(formData);
       onClose();
     } catch (err) {
       console.error("Erreur lors de l'enregistrement :", err);
+      toast.error("Une erreur est survenue lors de l'enregistrement");
     }
   };
   

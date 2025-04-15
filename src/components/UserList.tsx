@@ -2,7 +2,7 @@ import { User } from "../types/user";
 
 interface Props {
   users: User[];
-  onDelete: (id: number) => void;
+  onDelete: (id: number|undefined ) => void;
   onEdit: (user: User) => void;
 }
 

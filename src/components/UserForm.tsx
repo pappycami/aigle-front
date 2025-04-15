@@ -97,14 +97,9 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
 
           {/* Email */}
           <div>
-            <input
-              name="email"
-              type="email"
+            <input name="email" type="email" className="w-full p-2 border rounded" placeholder="Email"
               value={editedUser.email}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              placeholder="Email"
-            />
+              onChange={handleChange} />
             {formErrors["email"] && (
               <p className="text-red-500 text-sm">{formErrors["email"]}</p>
             )}
@@ -112,12 +107,9 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
 
           {/* Rôle */}
           <div>
-            <select
-              name="role"
+            <select name="role" className="w-full p-2 border rounded"
               value={editedUser.role}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            >
+              onChange={handleChange} >
               <option value="">Sélectionner un rôle</option>
               <option value="ADMIN">Admin</option>
               <option value="USER">User</option>
@@ -131,14 +123,9 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
 
           {/* Prénom */}
           <div>
-            <input
-              name="profile.firstname"
-              type="text"
+            <input name="profile.firstname" type="text" className="w-full p-2 border rounded" placeholder="Prénom"
               value={editedUser.profile?.firstname || ""}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              placeholder="Prénom"
-            />
+              onChange={handleChange} />
             {formErrors["profile.firstname"] && (
               <p className="text-red-500 text-sm">{formErrors["profile.firstname"]}</p>
             )}
@@ -146,14 +133,9 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
 
           {/* Nom */}
           <div>
-            <input
-              name="profile.lastname"
-              type="text"
+            <input name="profile.lastname" type="text" className="w-full p-2 border rounded" placeholder="Nom"
               value={editedUser.profile?.lastname || ""}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              placeholder="Nom"
-            />
+              onChange={handleChange} />
             {formErrors["profile.lastname"] && (
               <p className="text-red-500 text-sm">{formErrors["profile.lastname"]}</p>
             )}
@@ -162,28 +144,17 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
           {/* Téléphone */}
           <div>
             <input
-              name="profile.phone"
-              type="text"
+              name="profile.phone" type="text" className="w-full p-2 border rounded" placeholder="Téléphone"
               value={editedUser.profile?.phone || ""}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              placeholder="Téléphone"
-            />
+              onChange={handleChange} />
           </div>
 
           {/* Boutons */}
           <div className="flex justify-end space-x-2">
-            <button
-              type="button"
-              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-              onClick={onClose}
-            >
+            <button type="button" className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={onClose}>
               Annuler
             </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
+            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
               Enregistrer
             </button>
           </div>

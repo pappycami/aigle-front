@@ -61,7 +61,7 @@ export default function HomePage() {
     }
   };  
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: number|undefined) => {
     console.log("Supprimer utilisateur ID:", id);
     if (!accessToken) return;
   

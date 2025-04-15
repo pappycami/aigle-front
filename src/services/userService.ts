@@ -49,7 +49,7 @@ export const updateUser = async (user: User, accessToken: string): Promise<User>
   return res.json();
 };
 
-export const deleteUser = async (id: number, accessToken: string): Promise<void> => {
+export const deleteUser = async (id: number|undefined, accessToken: string): Promise<void> => {
   const res = await fetch(`${API_URL}/${id}`, {
     method: "DELETE",
     headers: {

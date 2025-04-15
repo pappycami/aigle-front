@@ -14,7 +14,7 @@ export default function Menu() {
 
   return (
     <nav className="flex items-center justify-between bg-blue-600 p-4 text-white shadow">
-      <h1 className="text-xl font-bold">Aigle</h1>
+      <h1 className="text-xl font-bold">Aigle 🦅</h1>
       <ul className="flex gap-4">
         <li>
           <Link to="/users" className="hover:underline">Utilisateurs</Link>

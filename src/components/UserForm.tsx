@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { User } from "../types/user";
 
 interface Props {
@@ -9,163 +10,110 @@ interface Props {
 }
 
 export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
-  const [editedUser, setEditedUser] = useState<User | null>(user);
-  const [formErrors, setFormErrors] = useState<Partial<Record<string, string>>>({});
+  const { register, handleSubmit, reset, formState: { errors }} = useForm<User>({ defaultValues: user ?? {} });
 
   useEffect(() => {
-    setEditedUser(user);
-    setFormErrors({});
-  }, [user]);
+    if (user) reset(user); // Remplit le form à chaque changement de `user`
+  }, [user, reset]);
 
-  const validateField = (name: string, value: string): string => {
-    switch (name) {
-      case "email":
-        if (!value) return "L'email est requis.";
-        if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)) return "Format email invalide.";
-        return "";
-      case "role":
-        if (!value) return "Le rôle est requis.";
-        return "";
-      case "profile.firstname":
-      case "profile.lastname":
-        if (!value) return "Ce champ est requis.";
-        if (value.length < 2) return "Minimum 2 caractères.";
-        return "";
-      case "profile.birthDate":
-        if (value && isNaN(Date.parse(value))) return "Date invalide.";
-        return "";
-      default:
-        return "";
-    }
+  const onSubmit = (data: User) => {
+    onSave(data);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    if (!editedUser) return;
-
-    const { name, value } = e.target;
-    const error = validateField(name, value);
-    setFormErrors((prev) => ({ ...prev, [name]: error }));
-
-    if (name.startsWith("profile.")) {
-      const profileField = name.split(".")[1];
-      setEditedUser({
-        ...editedUser,
-        profile: {
-          ...editedUser.profile,
-          [profileField]: value,
-        },
-      });
-    } else {
-      setEditedUser({
-        ...editedUser,
-        [name]: value,
-      });
-    }
-  };
-
-  const handleSubmit = (evt: React.FormEvent) => {
-    evt.preventDefault();
-    if (!editedUser) return;
-
-    const fieldsToValidate: Record<string, string> = {
-      email: editedUser.email,
-      role: editedUser.role,
-      "profile.firstname": editedUser.profile?.firstname || "",
-      "profile.lastname": editedUser.profile?.lastname || "",
-    };
-
-    const newErrors: Partial<Record<string, string>> = {};
-
-    for (const [field, value] of Object.entries(fieldsToValidate)) {
-      const error = validateField(field, value);
-      if (error) newErrors[field] = error;
-    }
-
-    setFormErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      onSave(editedUser);
-    }
-  };
-
-  if (!isOpen || !editedUser) return null;
+  if (!isOpen || !user) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-md w-full max-w-md shadow-lg">
         <h2 className="text-xl font-semibold mb-4">
-          {editedUser.id ? "Modifier l'utilisateur" : "Créer un utilisateur"}
+          {user.id ? "Modifier l'utilisateur" : "Créer un utilisateur"}
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
           {/* Email */}
           <div>
-            <input name="email" type="email" className="w-full p-2 border rounded" placeholder="Email"
-              value={editedUser.email}
-              onChange={handleChange} />
-            {formErrors["email"] && (
-              <p className="text-red-500 text-sm">{formErrors["email"]}</p>
+            <input type="email" className="w-full p-2 border rounded" placeholder="Email"
+              {...register("email", {
+                required: "L'email est requis",
+                pattern: {
+                  value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                  message: "Email invalide",
+                },
+              })} 
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
           </div>
 
           {/* Rôle */}
           <div>
-            <select name="role" className="w-full p-2 border rounded"
-              value={editedUser.role}
-              onChange={handleChange} >
-              <option value="">Sélectionner un rôle</option>
-              <option value="ADMIN">Admin</option>
-              <option value="USER">User</option>
-              <option value="MODERATOR">Modérateur</option>
-              <option value="CONTRIBUTOR">Contributeur</option>
-            </select>
-            {formErrors["role"] && (
-              <p className="text-red-500 text-sm">{formErrors["role"]}</p>
+          <select className="w-full p-2 border rounded" 
+            {...register("role", { required: "Le rôle est requis" })}>
+            <option value="">-- Sélectionner un rôle --</option>
+            <option value="ADMIN">Admin</option>
+            <option value="USER">Utilisateur</option>
+            <option value="MODERATOR">Modérateur</option>
+            <option value="CONTRIBUTOR">Contributeur</option>
+          </select>
+            {errors.role && (
+              <p className="text-red-500 text-sm">{errors.role.message}</p>
             )}
           </div>
 
           {/* Prénom */}
           <div>
-            <input name="profile.firstname" type="text" className="w-full p-2 border rounded" placeholder="Prénom"
-              value={editedUser.profile?.firstname || ""}
-              onChange={handleChange} />
-            {formErrors["profile.firstname"] && (
-              <p className="text-red-500 text-sm">{formErrors["profile.firstname"]}</p>
+            <input type="text" className="w-full p-2 border rounded" placeholder="Prénom"
+              {...register("profile.firstname", {
+                required: "Le prénom est requis",
+                minLength: {
+                  value: 2,
+                  message: "Minimum 2 caractères",
+                },
+              })} 
+            />
+            {errors.profile?.firstname && (
+              <p className="text-red-500 text-sm">{errors.profile?.firstname.message}</p>
             )}
           </div>
 
           {/* Nom */}
           <div>
-            <input name="profile.lastname" type="text" className="w-full p-2 border rounded" placeholder="Nom"
-              value={editedUser.profile?.lastname || ""}
-              onChange={handleChange} />
-            {formErrors["profile.lastname"] && (
-              <p className="text-red-500 text-sm">{formErrors["profile.lastname"]}</p>
+            <input type="text" className="w-full p-2 border rounded" placeholder="Nom"
+              {...register("profile.lastname", {
+                required: "Le nom est requis",
+              })} 
+            />
+            {errors.profile?.lastname && (
+              <p className="text-red-500 text-sm">{errors.profile?.lastname.message}</p>
             )}
           </div>
 
           {/* Téléphone */}
           <div>
-            <input
-              name="profile.phone" type="text" className="w-full p-2 border rounded" placeholder="Téléphone"
-              value={editedUser.profile?.phone || ""}
-              onChange={handleChange} />
+            <input type="text" className="w-full p-2 border rounded" placeholder="Téléphone" {...register("profile.phone")} />
           </div>
 
           {/* Adresse */}
           <div>
-            <input name="profile.address" type="text" className="w-full p-2 border rounded" placeholder="Adresse"
-              value={editedUser.profile?.address || ""}
-              onChange={handleChange} />
+            <input type="text" className="w-full p-2 border rounded" placeholder="Adresse" 
+              {...register("profile.address", {
+                required: "L'adresse est requise",
+                minLength: { value: 5, message: "Adresse trop courte" },
+              })} />
+            {errors.profile?.address && (
+              <p className="text-red-500 text-sm">{errors.profile?.address.message}</p>
+            )}
           </div>
 
           {/* Date de naissance */}
           <div>
-            <input name="profile.birthDate" type="date" className="w-full p-2 border rounded" placeholder="Date de naissance" 
-              value={editedUser.profile?.birthDate || ""}
-              onChange={handleChange} />
-            {formErrors["profile.birthDate"] && (
-              <p className="text-red-500 text-sm">{formErrors["profile.birthDate"]}</p>
+            <input type="date" className="w-full p-2 border rounded" placeholder="Date de naissance" 
+              {...register("profile.birthDate", {
+                required: "La date de naissance est requise",
+              })} />
+            {errors.profile?.birthDate && (
+              <p className="text-red-500 text-sm">{errors.profile?.birthDate.message}</p>
             )}
           </div>
 

@@ -16,7 +16,7 @@ export interface Group {
   export interface User {
     id?: number;
     email: string;
-    role: string;
+    role: 'ADMIN' | 'USER' | 'MODERATOR' | 'CONTRIBUTOR';
     profile: Profile;
     groups: Group[];
   }

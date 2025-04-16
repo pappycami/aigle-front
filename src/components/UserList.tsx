@@ -1,16 +1,16 @@
-import { User } from "../types/user";
+import { User } from "@/types/user";
 
 interface Props {
   users: User[];
-  onDelete: (id: number|undefined ) => void;
+  onDelete: (id?: number ) => void;
   onEdit: (user: User) => void;
 }
 
 export default function UserList({ users, onDelete, onEdit }: Props) {
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-2">Liste des utilisateurs</h2>
-      <table className="w-full border text-sm text-left">
+      <h2 className="mb-2 text-xl font-semibold">Liste des utilisateurs</h2>
+      <table className="w-full text-sm text-left border">
         <thead>
           <tr className="bg-gray-100">
             <th className="p-2">Nom</th>

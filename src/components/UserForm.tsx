@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { User } from "../types/user";
-import { updateUser, createUser } from "../services/userService";
-import { useAuth } from "../hooks/useAuth";
+import { User, defaultUser } from "@/types/user";
+import { updateUser, createUser } from "@services/userService";
+import { useAuth } from "@hooks/useAuth";
 import toast from 'react-hot-toast';
 
 
@@ -14,12 +14,13 @@ interface Props {
 }
 
 export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
-  const { register, handleSubmit, reset, formState: { errors }} = useForm<User>({ defaultValues: user ?? {} });
+  
+  const { register, handleSubmit, reset, formState: { errors }} = useForm<User>({ defaultValues: defaultUser });
   const { accessToken } = useAuth();
 
   useEffect(() => {
-    if (user) reset(user); // Remplit le form à chaque changement de `user`
-  }, [user, reset]);
+    reset(user ?? defaultUser);
+  }, [user, reset]);  
 
   const onSubmit = async (formData: User) => {
     try {
@@ -39,13 +40,13 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
   };
   
 
-  if (!isOpen || !user) return null;
+  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-md w-full max-w-md shadow-lg">
-        <h2 className="text-xl font-semibold mb-4">
-          {user.id ? "Modifier l'utilisateur" : "Créer un utilisateur"}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="w-full max-w-md p-6 bg-white rounded-md shadow-lg">
+        <h2 className="mb-4 text-xl font-semibold">
+          {user?.id ? "Modifier l'utilisateur" : "Créer un utilisateur"}
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
@@ -61,7 +62,7 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
               })} 
             />
             {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
+              <p className="text-sm text-red-500">{errors.email.message}</p>
             )}
           </div>
 
@@ -76,7 +77,7 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
             <option value="CONTRIBUTOR">Contributeur</option>
           </select>
             {errors.role && (
-              <p className="text-red-500 text-sm">{errors.role.message}</p>
+              <p className="text-sm text-red-500">{errors.role.message}</p>
             )}
           </div>
 
@@ -92,7 +93,7 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
               })} 
             />
             {errors.profile?.firstname && (
-              <p className="text-red-500 text-sm">{errors.profile?.firstname.message}</p>
+              <p className="text-sm text-red-500">{errors.profile?.firstname.message}</p>
             )}
           </div>
 
@@ -104,7 +105,7 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
               })} 
             />
             {errors.profile?.lastname && (
-              <p className="text-red-500 text-sm">{errors.profile?.lastname.message}</p>
+              <p className="text-sm text-red-500">{errors.profile?.lastname.message}</p>
             )}
           </div>
 
@@ -121,7 +122,7 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
                 minLength: { value: 5, message: "Adresse trop courte" },
               })} />
             {errors.profile?.address && (
-              <p className="text-red-500 text-sm">{errors.profile?.address.message}</p>
+              <p className="text-sm text-red-500">{errors.profile?.address.message}</p>
             )}
           </div>
 
@@ -132,7 +133,7 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
                 required: "La date de naissance est requise",
               })} />
             {errors.profile?.birthDate && (
-              <p className="text-red-500 text-sm">{errors.profile?.birthDate.message}</p>
+              <p className="text-sm text-red-500">{errors.profile?.birthDate.message}</p>
             )}
           </div>
 
@@ -141,7 +142,7 @@ export default function UserForm({ user, isOpen, onClose, onSave }: Props) {
             <button type="button" className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={onClose}>
               Annuler
             </button>
-            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            <button type="submit" className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
               Enregistrer
             </button>
           </div>

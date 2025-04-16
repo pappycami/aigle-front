@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import { getAllUsers, deleteUser, updateUser, createUser } from "../services/userService";
-import UserList from "../components/UserList";
-import UserForm from "../components/UserForm";
-import UserAddButton from "../components/UserAddButton";
-import { User } from "../types/user";
+import { useAuth } from "@hooks/useAuth";
+import { getAllUsers, deleteUser, updateUser, createUser } from "@services/userService";
+import UserList from "@components/UserList";
+import UserForm from "@components/UserForm";
+import UserAddButton from "@components/UserAddButton";
+import { User } from "@/types/user";
 import toast from "react-hot-toast";
 
-export default function usersPage() {
+export default function UsersPage() {
   const { accessToken, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -60,8 +60,10 @@ export default function usersPage() {
       await deleteUser(id, accessToken);
       setUsers((prev) => prev.filter((u) => u.id !== id));
       toast.success("Utilisateur supprimé");
-    } catch (err) {
-      console.error("Erreur suppression :", err);
+    } catch (err: unknown) {
+      if(err instanceof Error){
+        console.error("Erreur suppression :", err.message);
+      }
       setError("Impossible de supprimer l'utilisateur.");
     }
   };
@@ -83,8 +85,10 @@ export default function usersPage() {
       setIsModalOpen(false);
       setSelectedUser(null);
       toast.success("Utilisateur enregistré");
-    } catch (err: any) {
-      console.error("Erreur enregistrement :", err.message);
+    } catch (err: unknown) {
+      if(err instanceof Error) {
+        console.error("Erreur enregistrement :", err.message);
+      }
       toast.error("Une erreur est survenue lors de l'enregistrement");
     }
   };

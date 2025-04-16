@@ -20,4 +20,18 @@ export interface Group {
     profile: Profile;
     groups: Group[];
   }
+
+  export const defaultUser: User = {
+    id: 0,
+    email: "",
+    role: "USER",
+    profile: {
+      firstname: "",
+      lastname: "",
+      phone: "",
+      address: "",
+      birthDate: "",
+    },
+    groups: [],
+  };
   

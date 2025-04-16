@@ -1,7 +1,7 @@
 import api from "@/configs/apiBack";
 import { LoginRequest, AuthResponse } from "@/types/auth";
 
-export const loginFromApi = async (credentials: LoginRequest): Promise<AuthResponse|string> => {
+export const loginFromApi = async (credentials: LoginRequest): Promise<AuthResponse> => {
   try {
     const res = await api.post("/auth/login", credentials);
     return res.data;
@@ -9,7 +9,7 @@ export const loginFromApi = async (credentials: LoginRequest): Promise<AuthRespo
     if(err instanceof Error) {
       console.error("Erreur lors de la Autentification :", err.message);
     }
-    return "";
+    return { accessToken: "", refreshToken: ""};
   }
 };
 

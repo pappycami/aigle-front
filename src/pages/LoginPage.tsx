@@ -17,14 +17,14 @@ export default function LoginPage() {
     }
   }, [loading, accessToken, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent):Promise<void> => {
     e.preventDefault();
     try {
       const { accessToken } = await loginFromApi({ email, password });
       setAccessToken(accessToken);
       toast.success("Vous êtes Authentifier");
       navigate("/");
-    } catch (err) {
+    } catch (err: unknown) {
       toast.error("Erreur d'authentification");
       setError("Email ou mot de passe invalide");
       console.error(err);

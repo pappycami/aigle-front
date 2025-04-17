@@ -1,4 +1,13 @@
 {
-    "css.lint.unknownAtRules": "ignore"
+    "css.lint.unknownAtRules": "ignore",
+    "workbench.colorCustomizations": {
+        "activityBarBadge.background": "#ff5555", // Couleur de fond du badge
+        "activityBarBadge.foreground": "#ffffff", // Couleur du texte du badge
+        //"activityBar.background": "#dd3112", // Couleur de fond de la barre d'activité
+        //"activityBar.foreground": "#ffffff", // Couleur du texte de la barre d'activité
+        //"statusBar.background": "#ff5555", // Couleur de fond de la barre d'état
+        //"statusBar.foreground": "#ffffff", // Couleur du texte de la barre d'état
+        "statusBar.debuggingBackground": "#f34949",
+        "statusBar.debuggingForeground": "#ffffff"
+    }
 }
-  
